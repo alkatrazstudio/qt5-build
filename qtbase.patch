@@ -1,0 +1,19 @@
+diff --git a/src/network/access/qhttpnetworkreply.cpp b/src/network/access/qhttpnetworkreply.cpp
+index c9c3172304..8767faec80 100644
+--- a/src/network/access/qhttpnetworkreply.cpp
++++ b/src/network/access/qhttpnetworkreply.cpp
+@@ -490,8 +490,12 @@ qint64 QHttpNetworkReplyPrivate::readStatus(QAbstractSocket *socket)
+ 
+         // is this a valid reply?
+         if (fragment.length() == 5 && !fragment.startsWith("HTTP/")) {
+-            fragment.clear();
+-            return -1;
++            if(fragment.startsWith("ICY ")) {
++                fragment.replace("ICY ", "HTTP/1.1 ");
++            } else {
++                fragment.clear();
++                return -1;
++            }
+         }
+     } while (haveRead == 1);
+ 

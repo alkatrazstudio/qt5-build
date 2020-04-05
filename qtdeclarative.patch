@@ -1,0 +1,50 @@
+diff --git a/src/quick/items/qquicktextedit.cpp b/src/quick/items/qquicktextedit.cpp
+index bfc9f4c76..ff2d7c2df 100644
+--- a/src/quick/items/qquicktextedit.cpp
++++ b/src/quick/items/qquicktextedit.cpp
+@@ -2788,6 +2788,33 @@ void QQuickTextEdit::insert(int position, const QString &text)
+     d->control->updateCursorRectangle(false);
+ }
+ 
++/*!
++    \qmlmethod QtQuick::TextEdit::replace(int start, int end, string text)
++
++    Removes the section of text that is between the \a start and \a end positions from the TextEdit
++    and replaces it with the \a text.
++*/
++void QQuickTextEdit::replace(int start, int end, const QString &text)
++{
++    Q_D(QQuickTextEdit);
++    start = qBound(0, start, d->document->characterCount() - 1);
++    end = qBound(0, end, d->document->characterCount() - 1);
++    QTextCursor cursor(d->document);
++    cursor.setPosition(start, QTextCursor::MoveAnchor);
++    cursor.setPosition(end, QTextCursor::KeepAnchor);
++    d->richText = d->richText || (d->format == AutoText && Qt::mightBeRichText(text));
++    if (d->richText) {
++#if QT_CONFIG(texthtmlparser)
++        cursor.insertHtml(text);
++#else
++        cursor.insertText(text);
++#endif
++    } else {
++        cursor.insertText(text);
++    }
++    d->control->updateCursorRectangle(false);
++}
++
+ /*!
+     \qmlmethod string QtQuick::TextEdit::remove(int start, int end)
+ 
+diff --git a/src/quick/items/qquicktextedit_p.h b/src/quick/items/qquicktextedit_p.h
+index 7a847ffea..d6cc7dbb8 100644
+--- a/src/quick/items/qquicktextedit_p.h
++++ b/src/quick/items/qquicktextedit_p.h
+@@ -360,6 +360,7 @@ public Q_SLOTS:
+     void undo();
+     void redo();
+     void insert(int position, const QString &text);
++    void replace(int start, int end, const QString &text);
+     void remove(int start, int end);
+     Q_REVISION(2) void append(const QString &text);
+     Q_REVISION(7) void clear();

@@ -1,0 +1,79 @@
+name: Build Qt
+
+
+on:
+  push:
+    tags:
+    - v*
+
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Setup MSYS2
+      uses: numworks/setup-msys2@v1
+      with:
+        msystem: MINGW64
+
+    - name: Build
+      run: msys2do ./build-win.sh
+
+    - name: Generate release notes
+      shell: bash
+      run: ./generate-release-notes.sh > RELEASE.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        files: ${{ runner.temp }}/msys/msys64/home/a/*.pkg.tar.xz
+
+
+  build-osx:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build
+      run: ./build-osx.sh all
+
+    - name: Generate release notes
+      run: ./generate-release-notes.sh > RELEASE.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        files: archive/*.tar.xz
+
+
+  build-linux:
+    runs-on: ubuntu-18.04
+    container: ubuntu:18.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Build
+      run: ./build-linux.sh all
+
+    - name: Generate release notes
+      run: ./generate-release-notes.sh > RELEASE.md
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      with:
+        files: archive/*.tar.xz
+        body_path: RELEASE.md
