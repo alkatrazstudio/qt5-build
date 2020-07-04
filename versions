@@ -1,18 +1,18 @@
 # Qt
 # https://code.qt.io/cgit/qt/qt5.git/refs/
-QT5_BUILD_QT=v5.13.2
+QT5_BUILD_QT=v5.15.0
 
 # MSYS2 git hash
 # https://github.com/msys2/MINGW-packages/commits/master/mingw-w64-qt5
-QT5_BUILD_MSYSGITHASH=5cf8707963ac05c22ca58bd975ee4ed07e4dd714
+QT5_BUILD_MSYSGITHASH=507d11acc01423e45bd1c3574e51abe0805cbbcf
 
 # Qbs
 # https://code.qt.io/cgit/qbs/qbs.git/refs/
-QT5_BUILD_QBS=v1.15.0
+QT5_BUILD_QBS=v1.16.0
 
 # Quazip
 # https://github.com/stachenov/quazip/tags
-QT5_BUILD_QUAZIP=v0.8.1
+QT5_BUILD_QUAZIP=v0.9.1
 
 # Extended DBus for Qt
 # https://github.com/nemomobile/qtdbusextended/tags
@@ -20,11 +20,11 @@ QT5_BUILD_QTDBUSEXTENDED=0.0.3
 
 # Qt and QML MPRIS interface and adaptor
 # https://git.sailfishos.org/mer-core/qtmpris/-/tags
-QT5_BUILD_QTMPRIS=1.0.2
+QT5_BUILD_QTMPRIS=1.0.3
 
 # KDE Extra CMake Modules
 # https://github.com/KDE/extra-cmake-modules/tags
-QT5_BUILD_KDECMAKEEXTRAMODULES=v5.68.0
+QT5_BUILD_KDECMAKEEXTRAMODULES=v5.71.0
 
 # KDE Syntax Highlighting
 # https://github.com/KDE/syntax-highlighting/tags
