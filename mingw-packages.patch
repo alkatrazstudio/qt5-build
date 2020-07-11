@@ -1,42 +1,30 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index 8eaf0f1b1..3953142b1 100644
+index 1fc4da144..d0b3c58c6 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
-@@ -7,7 +7,7 @@
- _variant=-shared
- 
- # The way Qt5 libraries are built. Possible values are '-release', '-debug' or '-debug-and-release'
--_build_mode=-debug-and-release
-+_build_mode=-release
- 
- # Tune the following to decide how and what to build
- if [ "${_variant}" = "-static" ]; then
-@@ -33,8 +33,8 @@ if [ "${_variant}" = "-static" ]; then
+@@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
  #  _ltcg="yes"
    _ltcg="no"
  else
 -  _namesuff=
+-  _build_mode=("-release" "-force-debug-info" "-separate-debug-info")
 -  _with_icu=yes
 +  _namesuff=alst
++  _build_mode=("-release")
 +  _with_icu=no
    _with_fontconfig=yes
    _with_openssl=yes
    _with_dbus=yes
-@@ -48,10 +48,10 @@ else
-   _system_doubleconversion=yes
-   _system_libtiff=yes
-   _system_libwebp=yes
--  _build_examples=yes
-+  _build_examples=no
+@@ -50,7 +50,7 @@ else
+   _build_examples=no
    _build_tools=yes
--  _build_tests=yes
+   _build_tests=no
 -  _make_docs=yes
-+  _build_tests=no
 +  _make_docs=no
    _ltcg=no
  fi
  
-@@ -121,7 +121,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
+@@ -124,7 +124,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
  if [ "${_variant}" = "-static" ]; then
    _qt5_prefix="${MINGW_PREFIX}/${_realname}"
  else
@@ -45,7 +33,7 @@ index 8eaf0f1b1..3953142b1 100644
  fi
  
  depends=("${MINGW_PACKAGE_PREFIX}-gcc-libs"
-@@ -159,7 +159,9 @@ optdepends=($([[ "$_variant" == "-shared" ]] && echo \
+@@ -162,7 +162,9 @@ optdepends=($([[ "$_variant" == "-shared" ]] && echo \
                "${MINGW_PACKAGE_PREFIX}-firebird2" \
                "${MINGW_PACKAGE_PREFIX}-postgresql")
              )
@@ -56,18 +44,18 @@ index 8eaf0f1b1..3953142b1 100644
               "diffutils"
               "flex"
               "gperf"
-@@ -232,7 +234,9 @@ source=(#https://download.qt.io/development_releases/qt/${pkgver%.*}/${_ver_base
+@@ -226,7 +228,9 @@ source=(#https://download.qt.io/development_releases/qt/${pkgver%.*}/${_ver_base
+         0125-qt5-windeployqt-fixes.patch
          0300-qt-5.8.0-cast-errors.patch
          0301-link-evr.patch
-         0302-ugly-hack-disable-qdoc-build.patch
--        qml_static_plugins.patch)
-+        qml_static_plugins.patch
+-        0302-ugly-hack-disable-qdoc-build.patch)
++        0302-ugly-hack-disable-qdoc-build.patch
 +        qtbase.patch
 +        qtdeclarative.patch)
  
  # Translates using cygpath according to the ${_make} being used
  # (so either mingw32-make or MSYS2 make can be used)
-@@ -263,13 +267,28 @@ apply_patch_with_msg() {
+@@ -257,13 +261,28 @@ apply_patch_with_msg() {
    for _patch in "$@"
    do
      msg2 "Applying ${_patch}"
@@ -83,36 +71,36 @@ index 8eaf0f1b1..3953142b1 100644
 -  tar -xJf ${srcdir}/${_pkgfqn}${_hotfix}.tar.xz -C ${srcdir} --exclude=${_pkgfqn}/{qtandroidextras,qtmacextras,qtwayland,qtwebengine,qtx11extras} || true
 +
 +  7za x "${srcdir}/${_pkgfqn}${_hotfix}.tar.xz" -so | 7z x -si -ttar -o"${srcdir}/" \
-+    ${_pkgfqn}/qtbase \
-+    ${_pkgfqn}/qtquickcontrols \
-+    ${_pkgfqn}/qtgraphicaleffects \
-+    ${_pkgfqn}/gnuwin32 \
-+    ${_pkgfqn}/qtquickcontrols2 \
-+    ${_pkgfqn}/qtcharts \
-+    ${_pkgfqn}/qtdeclarative \
-+    ${_pkgfqn}/qttools \
-+    ${_pkgfqn}/qttranslations \
-+    ${_pkgfqn}/coin \
-+    ${_pkgfqn}/qtwinextras \
-+    ${_pkgfqn}/"*.*"
++      ${_pkgfqn}/qtbase \
++      ${_pkgfqn}/qtquickcontrols \
++      ${_pkgfqn}/qtgraphicaleffects \
++      ${_pkgfqn}/gnuwin32 \
++      ${_pkgfqn}/qtquickcontrols2 \
++      ${_pkgfqn}/qtcharts \
++      ${_pkgfqn}/qtdeclarative \
++      ${_pkgfqn}/qttools \
++      ${_pkgfqn}/qttranslations \
++      ${_pkgfqn}/coin \
++      ${_pkgfqn}/qtwinextras \
++      ${_pkgfqn}/"*.*"
  
    cd ${srcdir}/${_pkgfqn}
  
-@@ -341,6 +360,13 @@ prepare() {
+@@ -326,6 +345,13 @@ prepare() {
      0300-qt-5.8.0-cast-errors.patch \
      0301-link-evr.patch
  
 +  pushd qtbase
-+    apply_patch_with_msg qtbase.patch
++      apply_patch_with_msg qtbase.patch
 +  popd
 +  pushd qtdeclarative
-+    apply_patch_with_msg qtdeclarative.patch
++      apply_patch_with_msg qtdeclarative.patch
 +  popd
 +
    # See: https://bugreports.qt.io/browse/QTBUG-37902
    # _ver_num=${_ver_base%%-*}
    # sed -i "s/^MODULE_VERSION = .*$/MODULE_VERSION = ${_ver_num}/g" qtenginio/.qmake.conf
-@@ -443,6 +469,7 @@ build() {
+@@ -428,6 +454,7 @@ build() {
    if [ "${_configure}" = "./configure" ]; then
      _extra_config+=("-no-glib")
    else
@@ -120,7 +108,7 @@ index 8eaf0f1b1..3953142b1 100644
      _extra_config+=("-make-tool")
      _extra_config+=("${_make}")
    fi
-@@ -461,10 +488,13 @@ build() {
+@@ -446,10 +473,13 @@ build() {
      _sql_config+=("-sql-sqlite")
      _sql_config+=("-qt-sqlite")
    else
@@ -138,7 +126,7 @@ index 8eaf0f1b1..3953142b1 100644
    fi
  
    #if [ "${_variant}" = "-static" ]; then
-@@ -514,8 +544,6 @@ build() {
+@@ -499,8 +529,6 @@ build() {
      fi
    else
      configure_opts+=("-shared")
@@ -147,7 +135,7 @@ index 8eaf0f1b1..3953142b1 100644
      if [ "$_with_dbus" == "yes" ]; then
        configure_opts+=("-dbus")
      else
-@@ -545,16 +573,6 @@ build() {
+@@ -530,16 +558,6 @@ build() {
    if [ "$_system_libpng" == "no" ]; then
      configure_opts+=("-qt-libpng")
    fi
@@ -164,7 +152,7 @@ index 8eaf0f1b1..3953142b1 100644
    if [ "$_system_zlib" == "no" ]; then
      configure_opts+=("-qt-zlib")
    fi
-@@ -566,11 +584,6 @@ build() {
+@@ -551,11 +569,6 @@ build() {
    else
      configure_opts+=("-no-icu")
    fi
@@ -176,7 +164,7 @@ index 8eaf0f1b1..3953142b1 100644
    if [ "$_system_doubleconversion" == "yes" ]; then
      configure_opts+=("-system-doubleconversion")
    else
-@@ -592,6 +605,7 @@ build() {
+@@ -577,6 +590,7 @@ build() {
    #fi
  
    ${_configure} \
@@ -184,26 +172,17 @@ index 8eaf0f1b1..3953142b1 100644
      -prefix ${QTDIR_WIN} \
      -datadir ${QTDIR_WIN}/share/qt5 \
      -archdatadir ${QTDIR_WIN}/share/qt5 \
-@@ -606,7 +620,6 @@ build() {
-     "${_extra_libpaths[@]}" \
-     "${_extra_libs[@]}" \
-     -no-iconv \
--    -no-gstreamer \
-     "${_extra_config[@]}" \
-     "${_sql_config[@]}" \
-     "${configure_opts[@]}"
-@@ -633,7 +646,9 @@ build() {
+@@ -618,7 +632,8 @@ build() {
    # There is a race condition / dependency problem with libqtiff and dumpdoc.exe which
    # can happen at -j9 so make twice (dumpdoc.exe depends on libqtiff but can get built
    # first).
 -  ${_make} ${MAKEFLAGS} || ${_make} ${MAKEFLAGS}
 +  ${_make} ${MAKEFLAGS} &> /dev/null || perl -pi -e 's~\\(?![\r\n])~/~g' qttools/src/qdoc/Makefile.Release
 +  ${_make} ${MAKEFLAGS} &> /dev/null || ${_make} ${MAKEFLAGS}
-+
    # For quicker turn-around testing qtwebengine.
    # ${_make} module-qtbase
    # ${_make} module-qtwebengine
-@@ -649,7 +664,7 @@ build() {
+@@ -634,7 +649,7 @@ build() {
  
  check() {
    cd ${CARCH}
@@ -211,43 +190,65 @@ index 8eaf0f1b1..3953142b1 100644
 +  make check -j1 -k &> /dev/null || make check -j1 -k
  }
  
- package() {
-@@ -658,7 +673,8 @@ package() {
+ package_it() {
+@@ -643,7 +658,9 @@ package_it() {
  
    export PATH=${pkgdir}${_qt5_prefix}/bin:${srcdir}/${CARCH}/qtbase/bin:${srcdir}/${CARCH}/qtbase/lib:${PATH}
  
 -  ${_make} install
 +  echo "Packaging..."
 +  ${_make} install &> /dev/null || ${_make} install
++
    if [ "$_build_tools" == "yes" ]; then
      if [ "$_make_docs" == "yes" ]; then
        make docs
-@@ -707,10 +723,10 @@ package() {
+@@ -663,7 +680,7 @@ package_it() {
+ 
+   # Remove dlls from lib/
+   rm -f "${pkgdir}${_qt5_prefix}/lib"/*.dll
+-  
++
+   # Remove *.orig files
+   find "${pkgdir}${_qt5_prefix}" -type f -name "*.orig" -exec rm -f {} \;
+ 
+@@ -698,20 +715,20 @@ package_it() {
+ 
+   find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
+       -exec sed -i -e "s|${QT_PREFIX_WIN}|${_qt5_prefix}|g" {} \;
+-      
++
+   find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
+       -exec sed -i -e "s|${PKGDIR_QT_PREFIX_WIN}|${_qt5_prefix}|g" {} \;
+ 
    if [ "${_variant}" = "-static" ]; then
      find "${pkgdir}${_qt5_prefix}/lib" -type f -name '*.cmake' \
-       -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${PKGDIR_QT_PREFIX_WIN}/..|g" {} \;
+       -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${FAKE_PREFIX_FOR_REPLACE}/..|g" {} \;
 -    
 +
      find "${pkgdir}${_qt5_prefix}/share/qt5" -type f \( -name '*.pri' -o -name '*.prl' \) \
--      -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${PKGDIR_QT_PREFIX_WIN}/..|g" {} \;  
+-      -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${FAKE_PREFIX_FOR_REPLACE}/..|g" {} \;  
 -    
-+      -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${PKGDIR_QT_PREFIX_WIN}/..|g" {} \;
++      -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${FAKE_PREFIX_FOR_REPLACE}/..|g" {} \;
 +
      find "${pkgdir}${_qt5_prefix}/lib" -type f \( -name '*.pri' -o -name '*.prl' \) \
-       -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${PKGDIR_QT_PREFIX_WIN}/..|g" {} \;
+       -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${FAKE_PREFIX_FOR_REPLACE}/..|g" {} \;
+-    
++
+     find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
+       -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${MINGW_PREFIX}|g" {} \;
    fi
 diff --git a/mingw-w64-qt5/qt5-x86_64.install b/mingw-w64-qt5/qt5-x86_64.install
-index 8aa02a53a..07ab83199 100644
+index 7cb6cf7a1..64d816cba 100644
 --- a/mingw-w64-qt5/qt5-x86_64.install
 +++ b/mingw-w64-qt5/qt5-x86_64.install
 @@ -1,7 +1,7 @@
  post_install() {
 -  if [ -f "mingw64/bin/qmake.exe" ]; then
 -    cd mingw64/bin
--      ./qtbinpatcher --verbose --nobackup
+-      ./qtbinpatcher --verbose --nobackup --force --old-dir=@@QT_REAL_PREFIX/dir@@
 +  if [ -f "mingw64/opt/qt5alst/bin/qmake.exe" ]; then
 +    cd mingw64/opt/qt5alst/bin
-+      /mingw64/bin/qtbinpatcher.exe --verbose --nobackup
++      ./qtbinpatcher --verbose --nobackup --force
      cd -
    fi
  }
