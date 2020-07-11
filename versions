@@ -1,10 +1,10 @@
 # Qt
 # https://code.qt.io/cgit/qt/qt5.git/refs/
-QT5_BUILD_QT=v5.13.2
+QT5_BUILD_QT=v5.14.2
 
 # MSYS2 git hash
 # https://github.com/msys2/MINGW-packages/commits/master/mingw-w64-qt5
-QT5_BUILD_MSYSGITHASH=5cf8707963ac05c22ca58bd975ee4ed07e4dd714
+QT5_BUILD_MSYSGITHASH=a216d4577cb3cec820c7a93cf638811df4cbe0dd
 
 # Qbs
 # https://code.qt.io/cgit/qbs/qbs.git/refs/
@@ -24,7 +24,7 @@ QT5_BUILD_QTMPRIS=1.0.3
 
 # KDE Extra CMake Modules
 # https://github.com/KDE/extra-cmake-modules/tags
-QT5_BUILD_KDECMAKEEXTRAMODULES=v5.71.0
+QT5_BUILD_KDECMAKEEXTRAMODULES=v5.72.0
 
 # KDE Syntax Highlighting
 # https://github.com/KDE/syntax-highlighting/tags
