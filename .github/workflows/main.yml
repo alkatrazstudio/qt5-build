@@ -9,11 +9,13 @@ on:
 
 jobs:
   build-win:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Set up MSYS2 PATH
       run: echo ::add-path::C:\msys64\usr\bin\
@@ -40,11 +42,13 @@ jobs:
 
 
   build-osx:
-    runs-on: macos-latest
+    runs-on: macos-10.15
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Build
       run: ./build-osx.sh all
@@ -61,12 +65,14 @@ jobs:
 
 
   build-linux:
-    runs-on: ubuntu-18.04
-    container: ubuntu:18.04
+    runs-on: ubuntu-20.04
+    container: ubuntu:20.04
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Build
       run: ./build-linux.sh all
