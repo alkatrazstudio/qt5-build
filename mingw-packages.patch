@@ -1,5 +1,5 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index 1fc4da144..b3ee7a37a 100644
+index 1fc4da144..0eb33852a 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
 @@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
@@ -70,7 +70,7 @@ index 1fc4da144..b3ee7a37a 100644
    [[ -d ${srcdir}/${_pkgfqn} ]] && rm -rf ${srcdir}/${_pkgfqn}
 -  tar -xJf ${srcdir}/${_pkgfqn}${_hotfix}.tar.xz -C ${srcdir} --exclude=${_pkgfqn}/{qtandroidextras,qtmacextras,qtwayland,qtwebengine,qtx11extras} || true
 +
-+  7za x "${srcdir}/${_pkgfqn}${_hotfix}.tar.xz" -so | 7z x -si -ttar -o"${srcdir}/" \
++  7za x -y "${srcdir}/${_pkgfqn}${_hotfix}.tar.xz" -so | 7z x -y -si -ttar -o"${srcdir}/" \
 +      ${_pkgfqn}/qtbase \
 +      ${_pkgfqn}/qtquickcontrols \
 +      ${_pkgfqn}/qtgraphicaleffects \
@@ -91,10 +91,10 @@ index 1fc4da144..b3ee7a37a 100644
      0301-link-evr.patch
  
 +  pushd qtbase
-+      apply_patch_with_msg qtbase.patch
++    apply_patch_with_msg qtbase.patch
 +  popd
 +  pushd qtdeclarative
-+      apply_patch_with_msg qtdeclarative.patch
++    apply_patch_with_msg qtdeclarative.patch
 +  popd
 +
    # See: https://bugreports.qt.io/browse/QTBUG-37902
