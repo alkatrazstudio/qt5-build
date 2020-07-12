@@ -15,13 +15,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - name: Setup MSYS2
-      uses: numworks/setup-msys2@v1
-      with:
-        msystem: MINGW64
+    - name: Set up MSYS2 PATH
+      run: echo ::add-path::C:\msys64\usr\bin\
+      shell: pwsh
 
     - name: Build
-      run: msys2do ./build-win.sh
+      run: ./build-win.sh
+      shell: bash --login -eo pipefail "{0}"
+      env:
+        MSYSTEM: MINGW64
+        CHERE_INVOKING: 1
+        MSYS2_PATH_TYPE: inherit
 
     - name: Generate release notes
       shell: bash
