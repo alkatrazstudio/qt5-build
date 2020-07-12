@@ -1,5 +1,5 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index 1fc4da144..0eb33852a 100644
+index 1fc4da144..e7a027501 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
 @@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
@@ -172,7 +172,15 @@ index 1fc4da144..0eb33852a 100644
      -prefix ${QTDIR_WIN} \
      -datadir ${QTDIR_WIN}/share/qt5 \
      -archdatadir ${QTDIR_WIN}/share/qt5 \
-@@ -618,7 +632,8 @@ build() {
+@@ -591,7 +605,6 @@ build() {
+     "${_extra_libpaths[@]}" \
+     "${_extra_libs[@]}" \
+     -no-iconv \
+-    -no-gstreamer \
+     "${_extra_config[@]}" \
+     "${_sql_config[@]}" \
+     "${configure_opts[@]}"
+@@ -618,7 +631,8 @@ build() {
    # There is a race condition / dependency problem with libqtiff and dumpdoc.exe which
    # can happen at -j9 so make twice (dumpdoc.exe depends on libqtiff but can get built
    # first).
@@ -182,7 +190,7 @@ index 1fc4da144..0eb33852a 100644
    # For quicker turn-around testing qtwebengine.
    # ${_make} module-qtbase
    # ${_make} module-qtwebengine
-@@ -634,7 +649,7 @@ build() {
+@@ -634,7 +648,7 @@ build() {
  
  check() {
    cd ${CARCH}
@@ -191,7 +199,7 @@ index 1fc4da144..0eb33852a 100644
  }
  
  package_it() {
-@@ -643,7 +658,9 @@ package_it() {
+@@ -643,7 +657,9 @@ package_it() {
  
    export PATH=${pkgdir}${_qt5_prefix}/bin:${srcdir}/${CARCH}/qtbase/bin:${srcdir}/${CARCH}/qtbase/lib:${PATH}
  
@@ -202,7 +210,7 @@ index 1fc4da144..0eb33852a 100644
    if [ "$_build_tools" == "yes" ]; then
      if [ "$_make_docs" == "yes" ]; then
        make docs
-@@ -663,7 +680,7 @@ package_it() {
+@@ -663,7 +679,7 @@ package_it() {
  
    # Remove dlls from lib/
    rm -f "${pkgdir}${_qt5_prefix}/lib"/*.dll
@@ -211,7 +219,7 @@ index 1fc4da144..0eb33852a 100644
    # Remove *.orig files
    find "${pkgdir}${_qt5_prefix}" -type f -name "*.orig" -exec rm -f {} \;
  
-@@ -698,20 +715,20 @@ package_it() {
+@@ -698,20 +714,20 @@ package_it() {
  
    find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
        -exec sed -i -e "s|${QT_PREFIX_WIN}|${_qt5_prefix}|g" {} \;
@@ -237,7 +245,7 @@ index 1fc4da144..0eb33852a 100644
      find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
        -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${MINGW_PREFIX}|g" {} \;
    fi
-@@ -731,11 +748,11 @@ package_mingw-w64-i686-qt5-debug() {
+@@ -731,11 +747,11 @@ package_mingw-w64-i686-qt5-debug() {
    cp -rf ${srcdir}/${CARCH}-debug${MINGW_PREFIX} "${pkgdir}"/
  }
  
