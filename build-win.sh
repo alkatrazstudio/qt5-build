@@ -15,6 +15,7 @@ fi
 pacman --noconfirm -Su
 pacman --noconfirm --needed -S git patch dos2unix "mingw-w64-$PKG_ARCH-toolchain" > /dev/null
 
+rm -rf MINGW-packages
 git clone https://github.com/msys2/MINGW-packages.git > /dev/null
 pushd MINGW-packages
     git checkout "$QT5_BUILD_MSYSGITHASH" > /dev/null

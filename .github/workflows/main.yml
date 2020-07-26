@@ -38,7 +38,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        files: ${{ runner.temp }}/msys/msys64/home/a/*.pkg.tar.xz
+        files: "C:/msys64/msys/msys64/home/a/*.pkg.tar.zst"
 
 
   build-osx:

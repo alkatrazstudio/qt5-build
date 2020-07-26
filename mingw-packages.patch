@@ -1,5 +1,5 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index 1fc4da144..4788310ee 100644
+index 1fc4da144..fcb7915ce 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
 @@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
@@ -24,6 +24,15 @@ index 1fc4da144..4788310ee 100644
    _ltcg=no
  fi
  
+@@ -106,7 +106,7 @@ pkgbase="mingw-w64-${_realname}"
+ if [ "${_variant}" = "-static" ]; then
+   pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+ else
+-  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}" "${MINGW_PACKAGE_PREFIX}-${_realname}-debug")
++  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
+ fi
+ _ver_base=5.14.2
+ # use 5.6.1-1 hot fix : only the archive name was changed from *-5.6.1.tar.xz to *-5.6.1-1.tar.xz
 @@ -124,7 +124,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
  if [ "${_variant}" = "-static" ]; then
    _qt5_prefix="${MINGW_PREFIX}/${_realname}"
@@ -59,7 +68,7 @@ index 1fc4da144..4788310ee 100644
    do
      msg2 "Applying ${_patch}"
 -    patch -Nbp1 -i "${srcdir}/${_patch}"
-+    patch -sNbp1 -i "${srcdir}/${_patch}" || true
++    patch -tsNbp1 -i "${srcdir}/${_patch}" || true
    done
  }
  
@@ -69,7 +78,7 @@ index 1fc4da144..4788310ee 100644
    [[ -d ${srcdir}/${_pkgfqn} ]] && rm -rf ${srcdir}/${_pkgfqn}
 -  tar -xJf ${srcdir}/${_pkgfqn}${_hotfix}.tar.xz -C ${srcdir} --exclude=${_pkgfqn}/{qtandroidextras,qtmacextras,qtwayland,qtwebengine,qtx11extras} || true
 +
-+  xz -dc "${srcdir}/${_pkgfqn}${_hotfix}.tar.xz" | tar -xf- -C ${srcdir} ${_pkgfqn}/{qtbase,qtquickcontrols,qtgraphicaleffects,gnuwin32,qtquickcontrols2,qtcharts,qtdeclarative,qttools,qttranslations,coin,qtwinextras,qt.pro,configure.bat,configure.json,LICENSE.FDL,LICENSE.GPLv2,LICENSE.GPLv3,LICENSE.LGPLv21,LICENSE.LGPLv3,LICENSE.QT-LICENSE-AGREEMENT}
++  xz -dc "${srcdir}/${_pkgfqn}${_hotfix}.tar.xz" | tar -xf- -C ${srcdir} ${_pkgfqn}/{qtbase,qtquickcontrols,qtgraphicaleffects,gnuwin32,qtquickcontrols2,qtcharts,qtdeclarative,qttools,qttranslations,coin,qtwinextras,qt.pro,configure.bat,configure.json,.gitmodules,LICENSE.FDL,LICENSE.GPLv2,LICENSE.GPLv3,LICENSE.LGPLv21,LICENSE.LGPLv3,LICENSE.QT-LICENSE-AGREEMENT}
  
    cd ${srcdir}/${_pkgfqn}
  
@@ -247,7 +256,7 @@ index 1fc4da144..4788310ee 100644
  }
  
 diff --git a/mingw-w64-qt5/qt5-x86_64.install b/mingw-w64-qt5/qt5-x86_64.install
-index 7cb6cf7a1..64d816cba 100644
+index 7cb6cf7a1..7e7e99334 100644
 --- a/mingw-w64-qt5/qt5-x86_64.install
 +++ b/mingw-w64-qt5/qt5-x86_64.install
 @@ -1,7 +1,7 @@
@@ -257,7 +266,7 @@ index 7cb6cf7a1..64d816cba 100644
 -      ./qtbinpatcher --verbose --nobackup --force --old-dir=@@QT_REAL_PREFIX/dir@@
 +  if [ -f "mingw64/opt/qt5alst/bin/qmake.exe" ]; then
 +    cd mingw64/opt/qt5alst/bin
-+      ./qtbinpatcher --verbose --nobackup --force
++      qtbinpatcher --verbose --nobackup --force
      cd -
    fi
  }
