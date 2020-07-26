@@ -79,7 +79,7 @@ function doBootstrap {
                 sudo apt install $YFLAG "${PACKAGES[@]}" > /dev/null
             else
                 apt update $YFLAG > /dev/null
-                apt install $YFLAG "${PACKAGES[@]}" > /dev/null
+                apt install $YFLAG "${PACKAGES[@]}"
             fi
         fi
     fi
