@@ -72,6 +72,7 @@ function doBootstrap {
                 YFLAG=""
             else
                 YFLAG="-y"
+                export DEBIAN_FRONTEND=noninteractive
             fi
             if [[ $EUID != 0 ]]
             then
@@ -79,7 +80,7 @@ function doBootstrap {
                 sudo apt install $YFLAG "${PACKAGES[@]}" > /dev/null
             else
                 apt update $YFLAG > /dev/null
-                apt install $YFLAG "${PACKAGES[@]}"
+                apt install $YFLAG "${PACKAGES[@]}" > /dev/null
             fi
         fi
     fi
