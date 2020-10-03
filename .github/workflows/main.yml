@@ -100,8 +100,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        files:
-        - artifacts/release-linux/*.tar.xz
-        - artifacts/release-win/*.pkg.tar.zst
-        - artifacts/release-osx/*.tar.xz
+        files: |
+          artifacts/release-linux/*.tar.xz
+          artifacts/release-win/*.pkg.tar.zst
+          artifacts/release-osx/*.tar.xz
         body_path: RELEASE.md
