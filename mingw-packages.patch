@@ -1,5 +1,5 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index e877f3242..3978a3478 100644
+index e877f3242..35ebc0d5c 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
 @@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
@@ -24,18 +24,15 @@ index e877f3242..3978a3478 100644
    _ltcg=no
  fi
  
-@@ -106,9 +106,9 @@ pkgbase="mingw-w64-${_realname}"
+@@ -106,7 +106,7 @@ pkgbase="mingw-w64-${_realname}"
  if [ "${_variant}" = "-static" ]; then
    pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
  else
 -  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}" "${MINGW_PACKAGE_PREFIX}-${_realname}-debug")
 +  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
  fi
--_ver_base=5.15.0
-+_ver_base=5.15.1
+ _ver_base=5.15.0
  # use 5.6.1-1 hot fix : only the archive name was changed from *-5.6.1.tar.xz to *-5.6.1-1.tar.xz
- _hotfix=
- pkgver=${_ver_base//-/}
 @@ -124,7 +124,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
  if [ "${_variant}" = "-static" ]; then
    _qt5_prefix="${MINGW_PREFIX}/${_realname}"

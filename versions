@@ -1,6 +1,6 @@
 # Qt
 # https://code.qt.io/cgit/qt/qt5.git/refs/
-QT5_BUILD_QT=v5.15.1
+QT5_BUILD_QT=v5.15.0
 
 # MSYS2 git hash
 # https://github.com/msys2/MINGW-packages/commits/master/mingw-w64-qt5
