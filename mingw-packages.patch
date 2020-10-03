@@ -1,5 +1,5 @@
 diff --git a/mingw-w64-qt5/PKGBUILD b/mingw-w64-qt5/PKGBUILD
-index 1fc4da144..fcb7915ce 100644
+index e877f3242..32e2a9cc7 100644
 --- a/mingw-w64-qt5/PKGBUILD
 +++ b/mingw-w64-qt5/PKGBUILD
 @@ -31,9 +31,9 @@ if [ "${_variant}" = "-static" ]; then
@@ -24,15 +24,18 @@ index 1fc4da144..fcb7915ce 100644
    _ltcg=no
  fi
  
-@@ -106,7 +106,7 @@ pkgbase="mingw-w64-${_realname}"
+@@ -106,9 +106,9 @@ pkgbase="mingw-w64-${_realname}"
  if [ "${_variant}" = "-static" ]; then
    pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
  else
 -  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}" "${MINGW_PACKAGE_PREFIX}-${_realname}-debug")
 +  pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}")
  fi
- _ver_base=5.14.2
+-_ver_base=5.15.0
++_ver_base=5.15.1
  # use 5.6.1-1 hot fix : only the archive name was changed from *-5.6.1.tar.xz to *-5.6.1-1.tar.xz
+ _hotfix=
+ pkgver=${_ver_base//-/}
 @@ -124,7 +124,7 @@ license=('GPL3' 'LGPL' 'FDL' 'custom')
  if [ "${_variant}" = "-static" ]; then
    _qt5_prefix="${MINGW_PREFIX}/${_realname}"
@@ -53,9 +56,9 @@ index 1fc4da144..fcb7915ce 100644
               "flex"
               "gperf"
 @@ -226,7 +227,9 @@ source=(#https://download.qt.io/development_releases/qt/${pkgver%.*}/${_ver_base
+         0063-enable-mingw-schannel-alpn.patch
          0125-qt5-windeployqt-fixes.patch
          0300-qt-5.8.0-cast-errors.patch
-         0301-link-evr.patch
 -        0302-ugly-hack-disable-qdoc-build.patch)
 +        0302-ugly-hack-disable-qdoc-build.patch
 +        qtbase.patch
@@ -83,8 +86,8 @@ index 1fc4da144..fcb7915ce 100644
    cd ${srcdir}/${_pkgfqn}
  
 @@ -326,6 +332,13 @@ prepare() {
-     0300-qt-5.8.0-cast-errors.patch \
-     0301-link-evr.patch
+     0125-qt5-windeployqt-fixes.patch \
+     0300-qt-5.8.0-cast-errors.patch
  
 +  pushd qtbase
 +    apply_patch_with_msg qtbase.patch
@@ -173,20 +176,21 @@ index 1fc4da144..fcb7915ce 100644
      "${_extra_libs[@]}" \
      -no-iconv \
 -    -no-gstreamer \
+     -no-wmf \
      "${_extra_config[@]}" \
      "${_sql_config[@]}" \
-     "${configure_opts[@]}"
-@@ -618,7 +618,8 @@ build() {
+@@ -619,8 +619,8 @@ build() {
    # There is a race condition / dependency problem with libqtiff and dumpdoc.exe which
    # can happen at -j9 so make twice (dumpdoc.exe depends on libqtiff but can get built
    # first).
 -  ${_make} ${MAKEFLAGS} || ${_make} ${MAKEFLAGS}
+-
 +  ${_make} ${MAKEFLAGS} &> /dev/null || perl -pi -e 's~\\(?![\r\n])~/~g' qttools/src/qdoc/Makefile.Release
 +  ${_make} ${MAKEFLAGS} &> /dev/null || ${_make} ${MAKEFLAGS}
    # For quicker turn-around testing qtwebengine.
    # ${_make} module-qtbase
    # ${_make} module-qtwebengine
-@@ -634,7 +635,7 @@ build() {
+@@ -636,7 +636,7 @@ build() {
  
  check() {
    cd ${CARCH}
@@ -195,7 +199,7 @@ index 1fc4da144..fcb7915ce 100644
  }
  
  package_it() {
-@@ -643,7 +644,9 @@ package_it() {
+@@ -645,7 +645,9 @@ package_it() {
  
    export PATH=${pkgdir}${_qt5_prefix}/bin:${srcdir}/${CARCH}/qtbase/bin:${srcdir}/${CARCH}/qtbase/lib:${PATH}
  
@@ -206,7 +210,7 @@ index 1fc4da144..fcb7915ce 100644
    if [ "$_build_tools" == "yes" ]; then
      if [ "$_make_docs" == "yes" ]; then
        make docs
-@@ -663,7 +666,7 @@ package_it() {
+@@ -665,7 +667,7 @@ package_it() {
  
    # Remove dlls from lib/
    rm -f "${pkgdir}${_qt5_prefix}/lib"/*.dll
@@ -215,7 +219,7 @@ index 1fc4da144..fcb7915ce 100644
    # Remove *.orig files
    find "${pkgdir}${_qt5_prefix}" -type f -name "*.orig" -exec rm -f {} \;
  
-@@ -698,20 +701,20 @@ package_it() {
+@@ -700,20 +702,20 @@ package_it() {
  
    find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
        -exec sed -i -e "s|${QT_PREFIX_WIN}|${_qt5_prefix}|g" {} \;
@@ -241,7 +245,7 @@ index 1fc4da144..fcb7915ce 100644
      find "${pkgdir}${_qt5_prefix}/lib/pkgconfig" -type f -name '*.pc' \
        -exec sed -i -e "s|${MINGW_PREFIX_WIN}|${MINGW_PREFIX}|g" {} \;
    fi
-@@ -731,11 +734,11 @@ package_mingw-w64-i686-qt5-debug() {
+@@ -733,11 +735,11 @@ package_mingw-w64-i686-qt5-debug() {
    cp -rf ${srcdir}/${CARCH}-debug${MINGW_PREFIX} "${pkgdir}"/
  }
  

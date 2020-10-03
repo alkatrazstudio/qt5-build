@@ -3,11 +3,33 @@ name: Build Qt
 
 on:
   push:
+    branches:
+    - master
     tags:
     - v*
 
 
 jobs:
+  build-linux:
+    runs-on: ubuntu-20.04
+    container: ubuntu:20.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        persist-credentials: false
+
+    - name: Build
+      run: ./build-linux.sh all
+
+    - name: Save
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-linux
+        path: archive/*.tar.xz
+
+
   build-win:
     runs-on: windows-2019
 
@@ -29,16 +51,11 @@ jobs:
         CHERE_INVOKING: 1
         MSYS2_PATH_TYPE: inherit
 
-    - name: Generate release notes
-      shell: bash
-      run: ./generate-release-notes.sh > RELEASE.md
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+    - name: Save
+      uses: actions/upload-artifact@v2
       with:
-        files: "C:/msys64/home/a/*.pkg.tar.zst"
+        name: release-win
+        path: "C:/msys64/home/a/*.pkg.tar.zst"
 
 
   build-osx:
@@ -53,29 +70,27 @@ jobs:
     - name: Build
       run: ./build-osx.sh all
 
-    - name: Generate release notes
-      run: ./generate-release-notes.sh > RELEASE.md
-
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+    - name: Save
+      uses: actions/upload-artifact@v2
       with:
-        files: archive/*.tar.xz
+        name: release-osx
+        path: archive/*.tar.xz
 
 
-  build-linux:
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+
+    needs:
+    - build-linux
+    - build-win
+    - build-osx
+
     runs-on: ubuntu-20.04
-    container: ubuntu:20.04
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - name: Download
+      uses: actions/download-artifact@v2
       with:
-        persist-credentials: false
-
-    - name: Build
-      run: ./build-linux.sh all
+        path: artifacts
 
     - name: Generate release notes
       run: ./generate-release-notes.sh > RELEASE.md
@@ -85,5 +100,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
       with:
-        files: archive/*.tar.xz
+        files:
+        - artifacts/release-linux/*.tar.xz
+        - artifacts/release-win/*.pkg.tar.zst
+        - artifacts/release-osx/*.tar.xz
         body_path: RELEASE.md

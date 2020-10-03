@@ -208,14 +208,14 @@ function doLibs {
         #
         # QtDBusExtended
         #
-        rm -rf qtdbusextended
-        git clone https://github.com/nemomobile/qtdbusextended.git > /dev/null
-        pushd qtdbusextended
-            git checkout "$QT5_BUILD_QTDBUSEXTENDED" > /dev/null
-            qmake
-            make -j"$NPROC" &> /dev/null || make
-            make install &> /dev/null || make install
-        popd
+        #rm -rf qtdbusextended
+        #git clone https://github.com/nemomobile/qtdbusextended.git > /dev/null
+        #pushd qtdbusextended
+        #    git checkout "$QT5_BUILD_QTDBUSEXTENDED" > /dev/null
+        #    qmake
+        #    make -j"$NPROC" &> /dev/null || make
+        #    make install &> /dev/null || make install
+        #popd
 
         #
         # QtMPRIS
